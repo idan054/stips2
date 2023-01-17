@@ -1,11 +1,16 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:stips2/services/notifications.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'main.dart';
+
 
 class CleanWebView extends StatefulWidget {
   const CleanWebView({Key? key}) : super(key: key);
@@ -57,31 +62,15 @@ class _CleanWebViewState extends State<CleanWebView> {
             },
             onPageFinished: (url) async {
               print('START: onPageFinished()');
+              cookie = await controller?.runJavascriptReturningResult('document.cookie');
+              print('cookie ${cookie}');
               // _handleRemoveNotes('317');
-              await _handleRemoveNotes('300170');
-              _checkNotification();
+              _handleRemoveNotes('300170');
             },
           ),
         ),
       ),
     );
-  }
-
-  void _checkNotification() async {
-    print('START: _checkNotification()');
-    var cookie = await _getCookies();
-    var resp = await Dio().get('https://stips.co.il/api?name=messages.count&api_params={}',
-        options: Options(
-          headers: {
-            'cookie': '$cookie'
-          },
-        ));
-    print('resp ${resp}');
-  }
-
-  Future<String?> _getCookies() async {
-    var cookies = await controller?.runJavascriptReturningResult('document.cookie');
-    return cookies;
   }
 
   void _updateTheme() async {
@@ -98,15 +87,20 @@ class _CleanWebViewState extends State<CleanWebView> {
     var _isItemsAvailable = false;
     Timer.periodic(const Duration(milliseconds: 250), (timer) async {
       // print('_controller.getTitle() ${await controller?.getTitle()}');
-      try {
+      if (appState == AppLifecycleState.resumed) {
         if (_isItemsAvailable) {
-          removePenNotesFrom(from);
+          try {
+            removePenNotesFrom(from);
+          } catch (e, s) {
+            print('catch FAILED removePenNotesFrom.');
+          }
           // timer.cancel();
         } else {
           _isItemsAvailable = await isItemsAvailable();
         }
-      } catch (e, s) {
-        print(s);
+      } else {
+        var time = DateTime.now();
+        // print('$time appState not active - _handleRemoveNotes() OFF');
       }
     });
 

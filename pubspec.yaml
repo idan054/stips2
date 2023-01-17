@@ -17,6 +17,11 @@ dependencies:
   flutter_launcher_icons: ^0.11.0
   dio: ^4.0.6
   firebase_core: ^0.4.2+2
+  flutter_local_notifications: ^13.0.0
+  awesome_notifications: ^0.6.21
+  http: ^0.13.5
+  flutter_background_service: ^2.4.6
+  provider: ^6.0.5
 #  webview_flutter: ^4.0.1
 #  flutter_webview_plugin: ^0.4.0
 
