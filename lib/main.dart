@@ -9,29 +9,7 @@ import 'package:stips2/webViewScreen.dart';
 
 import 'cleanWebView.dart';
 
-const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails('your channel id', 'your channel name',
-        channelDescription: 'your channel description',
-        importance: Importance.max,
-        priority: Priority.high,
-        // icon: ,
-        ticker: 'ticker');
-
-const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
-
-final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-Future<void> setupNotify() async {
-  print('START: setup()');
-  const androidSetting = AndroidInitializationSettings('@mipmap/launcher_icon.png');
-  const initSettings = InitializationSettings(android: androidSetting);
-  await flutterLocalNotificationsPlugin.initialize(initSettings).then((_) {
-    debugPrint('setupPlugin: setup success');
-  }).catchError((Object error) {
-    debugPrint('Error: $error');
-  });
-}
+final bgService = FlutterBackgroundService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,9 +20,19 @@ void main() async {
   );
 }
 
-Future<void> initializeService() async {
-  final service = FlutterBackgroundService();
+final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+Future<void> setupNotify() async {
+  print('START: setup()');
+  const androidSetting = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const initSettings = InitializationSettings(android: androidSetting);
+  await flutterLocalNotificationsPlugin.initialize(initSettings).then((_) {
+    debugPrint('setupPlugin: setup success');
+  }).catchError((Object error) {
+    debugPrint('Error: $error');
+  });
+}
 
+Future<void> initializeService() async {
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'my_foreground', // id
     'MY FOREGROUND SERVICE', // title
@@ -52,28 +40,28 @@ Future<void> initializeService() async {
     importance: Importance.low, // importance must be at low or higher level
   );
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  const androidSetting = AndroidInitializationSettings('@mipmap/launcher_icon.png');
-  const initSettings = InitializationSettings(android: androidSetting);
-  await flutterLocalNotificationsPlugin.initialize(initSettings).then((_) {
-    debugPrint('setupPlugin: setup success');
-  }).catchError((Object error) {
-    debugPrint('Error: $error');
-  });
+  // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  //     FlutterLocalNotificationsPlugin();
+  // const androidSetting = AndroidInitializationSettings('@mipmap/ic_launcher');
+  // const initSettings = InitializationSettings(android: androidSetting);
+  // await flutterLocalNotificationsPlugin.initialize(initSettings).then((_) {
+  //   debugPrint('setupPlugin: setup success');
+  // }).catchError((Object error) {
+  //   debugPrint('Error: $error');
+  // });
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 
-  await service.configure(
+  await bgService.configure(
     iosConfiguration: IosConfiguration(),
     androidConfiguration: AndroidConfiguration(
       onStart: onStart,
       autoStart: true,
-      isForegroundMode: true,
+      isForegroundMode: false,
       notificationChannelId: 'my_foreground',
-      initialNotificationTitle: 'פועל לקבלת התראות',
+      initialNotificationTitle: 'סטיפס פעיל לקבלת התראות',
       initialNotificationContent: 'יש לשמור על היישומון פתוח ברקע',
       foregroundServiceNotificationId: 88,
     ),
@@ -81,7 +69,7 @@ Future<void> initializeService() async {
 }
 
 Future<void> onStart(ServiceInstance service) async {
-  handleGetNotifications();
+  handleGetNotifications(service);
 }
 
 class MyApp extends StatelessWidget {
@@ -128,7 +116,13 @@ class _LifeCycleManagerState extends State<LifeCycleManager> with WidgetsBinding
     print('START: didChangeAppLifecycleState state = $state');
     appState = state;
 
-    if (appState == AppLifecycleState.inactive || appState == AppLifecycleState.paused) {}
+    if (appState == AppLifecycleState.resumed) {
+      FlutterBackgroundService().invoke("setAsForeground");
+    }
+
+    if (appState == AppLifecycleState.inactive || appState == AppLifecycleState.paused) {
+      FlutterBackgroundService().invoke("setAsBackground");
+    }
   }
 
   @override

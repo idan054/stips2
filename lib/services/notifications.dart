@@ -6,40 +6,84 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../cleanWebView.dart';
 import '../main.dart';
 
-String? cookie;
-int? olderCounter;
+const AndroidNotificationDetails androidNotificationDetails =
+AndroidNotificationDetails('your channel id', 'your channel name',
+    channelDescription: 'your channel description',
+    importance: Importance.max,
+    priority: Priority.high,
+    // icon: 'ic_bg_service_small',
+    ticker: 'ticker');
 
-Future handleGetNotifications() async {
+const NotificationDetails notificationDetails =
+NotificationDetails(android: androidNotificationDetails);
+
+Future handleGetNotifications(ServiceInstance service) async {
   // Timer.periodic(const Duration(seconds: 15), (timer) async {
-  Timer.periodic(const Duration(seconds: 3), (timer) async {
-    print('${DateTime.now()} START: 15 SEC PASSED: handleGetNotifications()');
+
+  if (service is AndroidServiceInstance) {
+    service.on('setAsForeground').listen((event) {
+      print('START: setAsForeground()');
+      service.setAsBackgroundService(); // Notification hidden
+    });
+
+    service.on('setAsBackground').listen((event) {
+      print('START: setAsBackground()');
+      service.setAsForegroundService(); // Notification shows
+    });
+  }
+
+  service.on('cookieUpdate').listen((event) {
+    print('START: cookieUpdate()');
+    print('event $event');
+    cookie = event?['cookie'];
+  });
+
+  service.on('appStateUpdate').listen((event) {
+    print('START: appStateUpdate()');
+    print('event $event');
+    appState = event?['appState'];
+  });
+
+  Timer.periodic(const Duration(seconds: kDebugMode ? 20 : 45), (timer) async {
+    print('${DateTime.now()} START: 45 SEC PASSED: handleGetNotifications()');
     print('olderCounter: $olderCounter');
     print('appState: $appState');
     print('cookie $cookie');
 
     // if (appState != AppLifecycleState.resumed) {
-    //   var counter = await _checkNotification();
-    //   if (counter != 0 && counter != olderCounter) {
-    //     olderCounter = counter;
-    //     flutterLocalNotificationsPlugin.show(
-    //         0,
-    //         'יש לך ' '$counter ' 'הודעות חדשות!',
-    //         '' // תיאור התראה // 'לקבלת התראות, שמור על היישומון פתוח'
-    //         ,
-    //         notificationDetails);
-    //   }
-    // }
+    var isGetNotification = service is AndroidServiceInstance &&
+        (await service.isForegroundService());
+    print('isGetNotification: $isGetNotification');
+
+    if (isGetNotification) {
+      var counter = await _checkNotification();
+      if (counter != 0 && counter != olderCounter) {
+        olderCounter = counter;
+        flutterLocalNotificationsPlugin.show(
+            0,
+            'יש לך ' '$counter ' 'הודעות חדשות!',
+            '' // תיאור התראה // 'לקבלת התראות, שמור על היישומון פתוח'
+            ,
+            notificationDetails);
+      }
+    }
   });
 }
 
+
+
 Future<int> _checkNotification() async {
   print('START: _checkNotification()');
-  print('cookie ${cookie}');
+  print('cookie $cookie');
   var resp = await Dio().get('https://stips.co.il/api?name=messages.count&api_params={}',
       options: Options(
         // cookie is global & set on Webview

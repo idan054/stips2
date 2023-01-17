@@ -154,7 +154,7 @@ packages:
     source: hosted
     version: "2.4.6"
   flutter_background_service_android:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_background_service_android
       url: "https://pub.dartlang.org"

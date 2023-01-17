@@ -11,6 +11,8 @@ import 'package:stips2/services/notifications.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'main.dart';
 
+String? cookie = 'X';
+int? olderCounter;
 
 class CleanWebView extends StatefulWidget {
   const CleanWebView({Key? key}) : super(key: key);
@@ -63,7 +65,8 @@ class _CleanWebViewState extends State<CleanWebView> {
             onPageFinished: (url) async {
               print('START: onPageFinished()');
               cookie = await controller?.runJavascriptReturningResult('document.cookie');
-              print('cookie ${cookie}');
+              // Action name
+              bgService.invoke('cookieUpdate', {"cookie": cookie});
               // _handleRemoveNotes('317');
               _handleRemoveNotes('300170');
             },
