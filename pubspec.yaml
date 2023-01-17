@@ -1,0 +1,39 @@
+name: stips2
+description: A new Flutter project.
+
+publish_to: 'none'
+version: 1.0.1+2
+
+environment:
+  sdk: '>=2.18.4 <3.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  webview_flutter: ^2.8.0
+  flutter_svg: ^1.1.6
+  flutter_launcher_icons: ^0.11.0
+  dio: ^4.0.6
+  firebase_core: ^0.4.2+2
+#  webview_flutter: ^4.0.1
+#  flutter_webview_plugin: ^0.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+# Run this script to generate the app icon: flutter pub run flutter_launcher_icons:main
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/stips_plus_icon.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/

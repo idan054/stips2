@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "482537718189",
+    "project_id": "stips2",
+    "storage_bucket": "stips2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482537718189:android:2635212217c16ec3dd2124",
+        "android_client_info": {
+          "package_name": "com.example.stips2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482537718189-f2m420t3not7h3kscfkmsouins1mv1o7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5MyxT6lUvvoAWa2yIMBD6YE1w-x43Wz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482537718189-f2m420t3not7h3kscfkmsouins1mv1o7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
