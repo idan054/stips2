@@ -31,38 +31,38 @@ Future handleGetNotifications(ServiceInstance service) async {
 
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
-      print('START: setAsForeground()');
+      // print('START: setAsForeground()');
       service.setAsBackgroundService(); // Notification hidden
     });
 
     service.on('setAsBackground').listen((event) {
-      print('START: setAsBackground()');
+      // print('START: setAsBackground()');
       service.setAsForegroundService(); // Notification shows
     });
   }
 
   service.on('cookieUpdate').listen((event) {
-    print('START: cookieUpdate()');
-    print('event $event');
+    // print('START: cookieUpdate()');
+    // print('event $event');
     cookie = event?['cookie'];
   });
 
   service.on('appStateUpdate').listen((event) {
-    print('START: appStateUpdate()');
-    print('event $event');
+    // print('START: appStateUpdate()');
+    // print('event $event');
     appState = event?['appState'];
   });
 
   Timer.periodic(const Duration(seconds: kDebugMode ? 20 : 45), (timer) async {
-    print('${DateTime.now()} START: 45 SEC PASSED: handleGetNotifications()');
-    print('olderCounter: $olderCounter');
-    print('appState: $appState');
-    print('cookie $cookie');
+    // print('${DateTime.now()} START: 45 SEC PASSED: handleGetNotifications()');
+    // print('olderCounter: $olderCounter');
+    // print('appState: $appState');
+    // print('cookie $cookie');
 
     // if (appState != AppLifecycleState.resumed) {
     var isGetNotification = service is AndroidServiceInstance &&
         (await service.isForegroundService());
-    print('isGetNotification: $isGetNotification');
+    // print('isGetNotification: $isGetNotification');
 
     if (isGetNotification) {
       var counter = await _checkNotification();
@@ -82,8 +82,8 @@ Future handleGetNotifications(ServiceInstance service) async {
 
 
 Future<int> _checkNotification() async {
-  print('START: _checkNotification()');
-  print('cookie $cookie');
+  // print('START: _checkNotification()');
+  // print('cookie $cookie');
   var resp = await Dio().get('https://stips.co.il/api?name=messages.count&api_params={}',
       options: Options(
         // cookie is global & set on Webview
@@ -91,7 +91,7 @@ Future<int> _checkNotification() async {
         // headers: {'cookie': '_ga=GA1.3.1151012374.1673440711; _gid=GA1.3.1997928057.1673440711; Login%5FUser=hashedpassword=LGHoHMsrnDDoFLsFHGEDFLEpLpsnsIHE&mail=vqn0ov6LD%2BI%40tznvy%2Ep1z&rememberme=true&stype=75r4&id=GHLLII&password=Vqn0DIHFG; trc_cookie_storage=taboola%2520global%253Auser-id%3D4fc9c72f-4ae5-4357-87d0-588752fbe0d5-tuctab8887c; ASPSESSIONIDSESTCBQR=FFDGEBFDAIBDCAOOCMIDGJCB; ASPSESSIONIDCGSRDCTS=IHMGBNBAGADHGIIBMFEKGLKF; ASPSESSIONIDQGRQBBRQ=ILKIHIOAJENBENHHHFFCPLAI; ASPSESSIONIDAEQTACST=DMKHMELBCLPCDCIDLEFHGNOO; ASPSESSIONIDQESTBCQR=EDMPKAICHEBIGFGGJEIDCGLO; ASPSESSIONIDSGSSABRQ=CKEBDLEDPEAHKMPCMGCOBKEC'},
       ));
 
-  print('resp.data ${resp.data}');
+  // print('resp.data ${resp.data}');
   var counter = jsonDecode(resp.data)['data']['messagesCount'];
   // print('counter $counter');
   return counter;

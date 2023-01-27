@@ -22,13 +22,13 @@ void main() async {
 
 final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 Future<void> setupNotify() async {
-  print('START: setup()');
+  // print('START: setup()');
   const androidSetting = AndroidInitializationSettings('@mipmap/ic_launcher');
   const initSettings = InitializationSettings(android: androidSetting);
   await flutterLocalNotificationsPlugin.initialize(initSettings).then((_) {
-    debugPrint('setupPlugin: setup success');
+    // debugPrint('setupPlugin: setup success');
   }).catchError((Object error) {
-    debugPrint('Error: $error');
+    // debugPrint('Error: $error');
   });
 }
 
@@ -68,6 +68,11 @@ Future<void> initializeService() async {
   );
 }
 
+
+// TODO להסתיר את הנוטיפקציה הקבועה ע"י
+// TODO service.setAsBackgroundService(); ובמקום זה לשים פופאפ חד פעמי בכניסה
+
+@pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
   handleGetNotifications(service);
 }
@@ -113,7 +118,7 @@ class _LifeCycleManagerState extends State<LifeCycleManager> with WidgetsBinding
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('START: didChangeAppLifecycleState state = $state');
+    // print('START: didChangeAppLifecycleState state = $state');
     appState = state;
 
     if (appState == AppLifecycleState.resumed) {

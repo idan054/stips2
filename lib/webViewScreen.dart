@@ -94,14 +94,14 @@ class PaymentWebViewState extends State<PaymentWebView> {
   @override
   Widget build(BuildContext context) {
     Future.delayed(const Duration(seconds: 45)).then((_) {
-      print('Start Future');
+      // print('Start Future');
       isErrStop = true;
       setState(() {});
     });
 
     // בעיקרון כדי לאפשר תשלומים
     // if (cartModel.getTotal()!.toDouble() > 1000.0) click_checkoutButton = false;
-    print('click_checkoutButton is $click_checkoutButton');
+    // print('click_checkoutButton is $click_checkoutButton');
 
     var checkoutMap = <dynamic, dynamic>{'url': '', 'headers': <String, String>{}};
     // checkoutMap['headers'] = Map<String, String>.from(paymentInfo['headers']);
@@ -133,7 +133,7 @@ class PaymentWebViewState extends State<PaymentWebView> {
 
               // Redirect when success = https://www.spider3d.co.il/תודה/ - https://www.spider3d.co.il/%D7%AA%D7%95%D7%93%D7%94/
               var url = await controller.currentUrl() ?? '';
-              print('url $url');
+              // print('url $url');
               succeedRedirect(url); // if Based
 
               setState(() => isLoading = true);
@@ -141,7 +141,7 @@ class PaymentWebViewState extends State<PaymentWebView> {
               ;
               await controller.evaluateJavascript('console.log("Print TEST by JS")');
 
-              print('onWebViewCreated');
+              // print('onWebViewCreated');
               await controller.getTitle();
 
               /*        await _controller.evaluateJavascript(
@@ -158,7 +158,7 @@ class PaymentWebViewState extends State<PaymentWebView> {
               succeedRedirect(url); // if Based
 
               setState(() => isLoading = false);
-              print('Current url $url');
+              // print('Current url $url');
 
               if (url.contains('icredit')) {
                 var _month = '12';

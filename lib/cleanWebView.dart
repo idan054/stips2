@@ -27,7 +27,7 @@ class _CleanWebViewState extends State<CleanWebView> {
 
   @override
   Widget build(BuildContext context) {
-    print('START: CleanWebView()');
+    // print('START: CleanWebView()');
 
     return SafeArea(
       child: WillPopScope(
@@ -63,7 +63,7 @@ class _CleanWebViewState extends State<CleanWebView> {
              """);
             },
             onPageFinished: (url) async {
-              print('START: onPageFinished()');
+              // print('START: onPageFinished()');
               cookie = await controller?.runJavascriptReturningResult('document.cookie');
               // Action name
               bgService.invoke('cookieUpdate', {"cookie": cookie});
@@ -95,7 +95,7 @@ class _CleanWebViewState extends State<CleanWebView> {
           try {
             removePenNotesFrom(from);
           } catch (e, s) {
-            print('catch FAILED removePenNotesFrom.');
+            // print('catch FAILED removePenNotesFrom.');
           }
           // timer.cancel();
         } else {
@@ -129,7 +129,7 @@ class _CleanWebViewState extends State<CleanWebView> {
 
     var resp = await controller?.runJavascriptReturningResult('items.length');
     var isItemsAvailable = resp != null && int.parse(resp) != 0;
-    print('DONE: isItemsAvailable: $isItemsAvailable');
+    // print('DONE: isItemsAvailable: $isItemsAvailable');
     return isItemsAvailable;
   }
 
